@@ -3,6 +3,7 @@ package com.github.perscholas.dao;
 import com.github.perscholas.model.CourseInterface;
 import com.github.perscholas.model.StudentInterface;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -14,14 +15,14 @@ public interface StudentDao {
      * reads the student table in database
      * @return database data as a List<Student>
      */
-    List<StudentInterface> getAllStudents();
+    List<StudentInterface> getAllStudents() throws SQLException;
 
     /**
      * takes a Student’s email as a String and parses the student list for a Student with that email and returns a Student Object.
      * @param studentEmail - student's email to be parsed
      * @return the student list of a Student with respective `studentEmail`
      */
-    StudentInterface getStudentByEmail(String studentEmail);
+    StudentInterface getStudentByEmail(String studentEmail) throws SQLException;
 
     /**
      * This method takes two parameters: the first one is the user email and the second one is the password from the user input.
@@ -29,7 +30,7 @@ public interface StudentDao {
      * @param password - password student uses to log in
      * @return `true` if a student was found; else `false`
      */
-    Boolean validateStudent(String studentEmail, String password);
+    Boolean validateStudent(String studentEmail, String password) throws SQLException;
 
     /**
      * After a successful student validation, this method takes a Student’s email and a Course ID.
@@ -38,12 +39,12 @@ public interface StudentDao {
      * @param studentEmail - email student uses to log in
      * @param courseId - id of course student wishes to register to
      */
-    void registerStudentToCourse(String studentEmail, int courseId);
+    void registerStudentToCourse(String studentEmail, int courseId) throws SQLException;
 
     /**
      * This method takes a Student’s Email as a parameter and would find all the courses a student is registered.
      * @param studentEmail - student's email to be parsed
      * @return list of courses student has registered to
      */
-    List<CourseInterface> getStudentCourses(String studentEmail);
+    List<Integer> getStudentCourses(String studentEmail) throws SQLException;
 }

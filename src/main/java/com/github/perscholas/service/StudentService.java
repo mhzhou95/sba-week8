@@ -6,7 +6,6 @@ import com.github.perscholas.model.CourseInterface;
 import com.github.perscholas.model.Student;
 import com.github.perscholas.model.StudentInterface;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,12 +21,12 @@ public class StudentService implements StudentDao {
     }
 
     public StudentService() {
-        this(DatabaseConnection.MYSQL);
+        this(DatabaseConnection.MARIADB);
     }
 
     @Override
-    public List<StudentInterface> getAllStudents() {
-        ResultSet result = dbc.executeQuery("SELECT * FROM students");
+    public List<StudentInterface> getAllStudents() throws SQLException {
+        ResultSet result = dbc.executeQuery("SELECT * FROM `student`");
         List<StudentInterface> list = new ArrayList<>();
         try {
             while (result.next()) {
@@ -40,27 +39,51 @@ public class StudentService implements StudentDao {
         } catch(SQLException se) {
             throw new Error(se);
         }
-
         return list;
     }
 
     @Override
-    public StudentInterface getStudentByEmail(String studentEmail) {
+    public StudentInterface getStudentByEmail(String studentEmail) throws SQLException {
+        ResultSet result = dbc.executeQuery("SELECT * FROM `student`"
+                + " WHERE `email` = '" + studentEmail + "';");
+        while(result.next() ){
+            String email = result.getString("email");
+            String name = result.getString("name");
+            String password = result.getString("password");
+            StudentInterface student = new Student(email, name, password);
+            return student;
+        }
         return null;
     }
 
     @Override
-    public Boolean validateStudent(String studentEmail, String password) {
-        return null;
+    public Boolean validateStudent(String studentEmail, String password) throws SQLException {
+        StudentInterface student = getStudentByEmail(studentEmail);
+        if( student.getPassword().equals(password)){
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void registerStudentToCourse(String studentEmail, int courseId) {
-
+    public void registerStudentToCourse(String studentEmail, int courseId) throws SQLException {
+        String studentEmailValue = "'" + studentEmail + "'";
+        String courseIdValue = "'" + courseId + "'";
+        dbc.executeQuery("insert into `studentCourses`(`courseId`, `studentEmail`) values( "
+                + courseIdValue + ", " + studentEmailValue + ")"
+                );
     }
 
     @Override
-    public List<CourseInterface> getStudentCourses(String studentEmail) {
-        return null;
+    public List<Integer> getStudentCourses(String studentEmail) throws SQLException {
+        String studentEmailValue = "'" + studentEmail + "'";
+        List<Integer> studentCourses = new ArrayList<>();
+        ResultSet result = dbc.executeQuery("SELECT * FROM `studentCourses`" +
+                "WHERE `studentEmail`=" + studentEmailValue
+                );
+        while( result.next()){
+            studentCourses.add(result.getInt("courseId"));
+        }
+        return studentCourses;
     }
 }

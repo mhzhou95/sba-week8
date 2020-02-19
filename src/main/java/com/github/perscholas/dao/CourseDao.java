@@ -2,6 +2,7 @@ package com.github.perscholas.dao;
 
 import com.github.perscholas.model.CourseInterface;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -9,5 +10,5 @@ import java.util.List;
  * @created 02/12/2020 - 5:56 PM
  */
 public interface CourseDao {
-    List<CourseInterface> getAllCourses();
+    List<CourseInterface> getAllCourses() throws SQLException;
 }
