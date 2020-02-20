@@ -38,6 +38,7 @@ public class SchoolManagementSystem implements Runnable {
                                 Integer courseId = null;
                                 try {
                                     courseId = getCourseRegistryInput();
+                                    console.println("Course Registered");
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
@@ -95,9 +96,9 @@ public class SchoolManagementSystem implements Runnable {
     private Integer getCourseRegistryInput() throws SQLException {
         CourseDao courseService = new CourseService();
         List<CourseInterface> courses = courseService.getAllCourses();
-        List<Integer> listOfCoursesIds = new ArrayList<>();
+        List<String> listOfCoursesIds = new ArrayList<>();
         for (CourseInterface course : courses){
-            listOfCoursesIds.add(course.getId());
+            listOfCoursesIds.add(course.getId().toString()+ " - " + course.getName());
         }
         return console.getIntegerInput(new StringBuilder()
                 .append("Welcome to the Course Registration Dashboard!")
