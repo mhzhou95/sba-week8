@@ -52,10 +52,14 @@ public class SchoolManagementSystem implements Runnable {
                             if ("view".equals(studentDashboardInput.trim())) {
                                 //logic to view all student courses
                                 try {
-                                    List<Integer> listOfRegisteredCourses = studentService.getStudentCourses(studentEmail);
+                                    List<CourseInterface> listOfRegisteredCourses = studentService.getStudentCourses(studentEmail);
+                                    List<String> stringOfCourses = new ArrayList<>();
+                                    for (CourseInterface registeredCourse : listOfRegisteredCourses){
+                                        stringOfCourses.add(registeredCourse.getId() +" - " + registeredCourse.getName());
+                                    }
                                     console.println(new StringBuilder()
                                             .append("You are registered for these courses \n")
-                                            .append(listOfRegisteredCourses.toString())
+                                            .append(stringOfCourses.toString())
                                             .toString());
                                 } catch (SQLException e) {
                                     e.printStackTrace();

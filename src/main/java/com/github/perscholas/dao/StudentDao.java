@@ -46,5 +46,5 @@ public interface StudentDao {
      * @param studentEmail - student's email to be parsed
      * @return list of courses student has registered to
      */
-    List<Integer> getStudentCourses(String studentEmail) throws SQLException;
+    List<CourseInterface> getStudentCourses(String studentEmail) throws SQLException;
 }

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // TODO - Implement respective DAO interface
 public class StudentService implements StudentDao {
@@ -74,7 +75,7 @@ public class StudentService implements StudentDao {
     }
 
     @Override
-    public List<Integer> getStudentCourses(String studentEmail) throws SQLException {
+    public List<CourseInterface> getStudentCourses(String studentEmail) throws SQLException {
         String studentEmailValue = "'" + studentEmail + "'";
         List<Integer> studentCourses = new ArrayList<>();
         ResultSet result = dbc.executeQuery("SELECT * FROM `studentCourses`" +
@@ -83,6 +84,8 @@ public class StudentService implements StudentDao {
         while( result.next()){
             studentCourses.add(result.getInt("courseId"));
         }
-        return studentCourses;
+        CourseService courseService = new CourseService();
+        List<CourseInterface> registeredCourses = courseService.getAllCourses().stream().filter( course -> studentCourses.contains(course.getId())).collect(Collectors.toList());
+        return registeredCourses;
     }
 }
