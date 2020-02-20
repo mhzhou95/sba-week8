@@ -24,7 +24,7 @@ public class CourseService implements CourseDao {
 
     @Override
     public List<CourseInterface> getAllCourses() throws SQLException {
-        ResultSet result = dbc.executeQuery("Select * from `course`");
+        ResultSet result = dbc.executeQuery("Select * from `courses`");
         List<CourseInterface> courses = new ArrayList<>();
 
         while( result.next()){

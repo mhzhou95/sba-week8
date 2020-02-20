@@ -26,7 +26,7 @@ public class StudentService implements StudentDao {
 
     @Override
     public List<StudentInterface> getAllStudents() throws SQLException {
-        ResultSet result = dbc.executeQuery("SELECT * FROM `student`");
+        ResultSet result = dbc.executeQuery("SELECT * FROM `students`");
         List<StudentInterface> list = new ArrayList<>();
         try {
             while (result.next()) {
@@ -44,7 +44,7 @@ public class StudentService implements StudentDao {
 
     @Override
     public StudentInterface getStudentByEmail(String studentEmail) throws SQLException {
-        ResultSet result = dbc.executeQuery("SELECT * FROM `student`"
+        ResultSet result = dbc.executeQuery("SELECT * FROM `students`"
                 + " WHERE `email` = '" + studentEmail + "';");
         while(result.next() ){
             String email = result.getString("email");
@@ -59,10 +59,9 @@ public class StudentService implements StudentDao {
     @Override
     public Boolean validateStudent(String studentEmail, String password) throws SQLException {
         StudentInterface student = getStudentByEmail(studentEmail);
-        if( student.getPassword().equals(password)){
+        if( student !=null && student.getPassword().equals(password)){
             return true;
-        }
-        return false;
+        }else return false;
     }
 
     @Override

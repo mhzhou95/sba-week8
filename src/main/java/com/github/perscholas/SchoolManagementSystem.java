@@ -17,56 +17,69 @@ public class SchoolManagementSystem implements Runnable {
 
     @Override
     public void run() {
-        String smsDashboardInput = getSchoolManagementSystemDashboardInput();
-        if ("login".equals(smsDashboardInput.trim())) {
-            StudentDao studentService = new StudentService(DatabaseConnection.MARIADB);
-            String studentEmail = console.getStringInput("Enter your email:").trim();
-            String studentPassword = console.getStringInput("Enter your password:").trim();
-            Boolean isValidLogin = null;
-            try {
-                isValidLogin = studentService.validateStudent(studentEmail, studentPassword);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            if (isValidLogin) {
-                String studentDashboardInput;
-                do {
-                    studentDashboardInput = getStudentDashboardInput();
-                    if ("register".equals(studentDashboardInput.trim())) {
-                        Integer courseId = null;
-                        try {
-                            courseId = getCourseRegistryInput();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            studentService.registerStudentToCourse(studentEmail, courseId);
-                        } catch (SQLException e) {
-                            console.println("ERROR!!! You are already registered for that Course");
-                            continue;
-                        }
+            Boolean run = true;
+            while(run) {
+                String smsDashboardInput = getSchoolManagementSystemDashboardInput();
+                if ("login".equals(smsDashboardInput.trim())) {
+                    StudentDao studentService = new StudentService(DatabaseConnection.MARIADB);
+                    String studentEmail = console.getStringInput("Enter your email:").trim();
+                    String studentPassword = console.getStringInput("Enter your password:").trim();
+                    Boolean isValidLogin = null;
+                    try {
+                        isValidLogin = studentService.validateStudent(studentEmail, studentPassword);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
-                    if("view".equals(studentDashboardInput.trim())){
-                        //logic to view all student courses
-                        try {
-                            List<Integer> listOfRegisteredCourses = studentService.getStudentCourses(studentEmail);
-                            console.println(new StringBuilder()
-                                    .append("You are registered for courses ")
-                                    .append(listOfRegisteredCourses.toString()).toString());
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
+                    if (isValidLogin) {
+                        String studentDashboardInput;
+                        do {
+                            studentDashboardInput = getStudentDashboardInput();
+                            if ("register".equals(studentDashboardInput.trim())) {
+                                Integer courseId = null;
+                                try {
+                                    courseId = getCourseRegistryInput();
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    studentService.registerStudentToCourse(studentEmail, courseId);
+                                } catch (SQLException e) {
+                                    console.println("ERROR!!! You are already registered for that Course");
+                                    continue;
+                                }
+                            }
+                            if ("view".equals(studentDashboardInput.trim())) {
+                                //logic to view all student courses
+                                try {
+                                    List<Integer> listOfRegisteredCourses = studentService.getStudentCourses(studentEmail);
+                                    console.println(new StringBuilder()
+                                            .append("You are registered for these courses \n")
+                                            .append(listOfRegisteredCourses.toString())
+                                            .toString());
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            if("logout".equals(studentDashboardInput.trim())){
+                                run = false;
+                            }
+                        } while (!studentDashboardInput.equals("logout"));
                     }
-                }while( !studentDashboardInput.equals("logout"));
+                    if(!isValidLogin){
+                        console.println("ERROR!!! Invalid credentials");
+                    }
+                }
+                if("exit".equals(smsDashboardInput.trim())){
+                    run = false;
+                }
             }
-        }
     }
 
     private String getSchoolManagementSystemDashboardInput() {
         return console.getStringInput(new StringBuilder()
                 .append("Welcome to the School Management System Dashboard!")
                 .append("\nFrom here, you can select any of the following options:")
-                .append("\n\t[ login ], [ logout ]")
+                .append("\n\t[ login ], [ exit ]")
                 .toString());
     }
 

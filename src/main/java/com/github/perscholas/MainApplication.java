@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class MainApplication {
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+    public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException {
         JdbcConfigurator.initialize();
         Runnable sms = new SchoolManagementSystem();
         sms.run();

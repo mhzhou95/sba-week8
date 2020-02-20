@@ -37,7 +37,7 @@ public class GetAllCoursesTest {
 
     @Test
     // given
-    public void test() throws SQLException, ClassNotFoundException {
+    public void test() throws SQLException, ClassNotFoundException, IOException {
         JdbcConfigurator.initialize();
 
         // when
